@@ -1,19 +1,27 @@
 'use client';
-import { useSession } from 'next-auth/react';
 
-const ClientProtectedPage = () => {
-	const { data: session } = useSession({
-		required: true,
-	});
-	return (
-		<section className='py-24'>
-			<div className='container'>
-				<h1 className='text-2xl font-bold'>Client Side</h1>
-				<h2 className='mt-4 font-medium'>You are logged in</h2>
-				<p>{session?.user?.name}</p>
+import { useSession, signIn, signOut } from 'next-auth/react';
+
+export default function Component() {
+	const { data: session } = useSession();
+
+	console.log(session);
+
+	if (session) {
+		return (
+			<div>
+				Signed in as {session.user?.name} <br />
+				<img src={session.user?.image} alt='logo' width={50} height={50} />
+				<button onClick={() => signOut()}>Sign out</button>
 			</div>
-		</section>
+		);
+	}
+	return (
+		<div>
+			Not signed in <br />
+			<button onClick={() => signIn()} className='bg-white text-black rounded-md px-2'>
+				Sign in
+			</button>
+		</div>
 	);
-};
-
-export default ClientProtectedPage;
+}
